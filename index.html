@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1, maximum-scale=1">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>高德-轨迹回放</title>
+<link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css"/>
+<style>
+html, body, #container {
+    height: 100%;
+    width: 100%;
+}
+
+.input-card .btn{
+    margin-right: 1.2rem;
+    width: 9rem;
+}
+
+.input-card .btn:last-child{
+    margin-right: 0;
+}
+</style>
+</head>
+<body>
+<div id="container"></div>
+<div class="input-card">
+    <h4>轨迹回放控制</h4>
+    <div class="input-item">
+        <input type="button" class="btn" value="开始动画" id="start" onclick="startAnimation()"/>
+        <input type="button" class="btn" value="暂停动画" id="pause" onclick="pauseAnimation()"/>
+    </div>
+    <div class="input-item">
+        <input type="button" class="btn" value="继续动画" id="resume" onclick="resumeAnimation()"/>
+        <input type="button" class="btn" value="停止动画" id="stop" onclick="stopAnimation()"/>
+    </div>
+</div>
+<script src="https://webapi.amap.com/maps?v=1.4.15&key=ea2c557ae707f049ccd1ee7d36afd1a4"></script>
+<script src="org_lonlat.js"></script>
+<script src="new_lonlat.js"></script>
+<script src="convertor.js"></script>
+<script>
+var convertor = new Convertor();
+
+var orgData = [];
+org_lonlats.forEach((item) => {
+    let latLng = convertor.WGS2GCJ({lng: parseFloat(item[2]), lat: parseFloat(item[1])});
+    orgData.push([latLng.lng, latLng.lat]);
+});
+
+var newData = [];
+new_lonlats.forEach((item) => {
+    let latLng = convertor.WGS2GCJ({lng: parseFloat(item[2]), lat: parseFloat(item[1])});
+    newData.push([latLng.lng, latLng.lat]);
+});
+
+var map = new AMap.Map("container", {
+    resizeEnable: true,
+    center: [116.397428, 39.90923],
+    zoom: 17
+});
+
+// 绘制轨迹
+var polyline = new AMap.Polyline({
+    map: map,
+    path: orgData,
+    showDir: true,
+    strokeColor: "red",  //线颜色
+    strokeOpacity: .5,     //线透明度
+    strokeWeight: 6,      //线宽
+    // strokeStyle: "solid"  //线样式
+});
+
+// 绘制轨迹
+var polyline = new AMap.Polyline({
+    map: map,
+    path: newData,
+    showDir: true,
+    strokeColor: "blue",  //线颜色
+    strokeOpacity: .5,     //线透明度
+    strokeWeight: 6,      //线宽
+    // strokeStyle: "solid"  //线样式
+});
+
+map.setFitView();
+
+</script>
+</body>
+</html>
